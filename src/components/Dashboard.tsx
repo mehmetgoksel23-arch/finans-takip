@@ -12,7 +12,8 @@ import {
   Plus,
   ArrowUpRight,
   ArrowDownRight,
-  Sparkles
+  Sparkles,
+  Receipt
 } from 'lucide-react';
 import { CreditCard as ICreditCard } from '../types';
 
@@ -34,13 +35,16 @@ interface DashboardProps {
   personalPpfEarnings: number;
   totalErodedFromCapital: number;
 
+  // Nakit Harcamalar
+  totalCashExpensesThisMonth?: number;
+
   // Kredi & Kartlar
   totalCardDebt: number;
   currentMonthObligation: number;
   totalRemainingInstallments: number;
   cardsWithDaysUntilCutoff: (ICreditCard & { daysLeft: string; isUrgent: boolean })[];
   onOpenQuickAction: (actionType?: 'spending' | 'payment' | 'ppf' | 'crypto') => void;
-  onNavigateTab: (tab: 'cards' | 'installments' | 'crypto_ppf') => void;
+  onNavigateTab: (tab: 'cards' | 'installments' | 'expenses' | 'crypto_ppf') => void;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
@@ -57,6 +61,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
   initialCapitalDebt,
   personalPpfEarnings,
   totalErodedFromCapital,
+  totalCashExpensesThisMonth = 0,
   totalCardDebt,
   currentMonthObligation,
   totalRemainingInstallments,
@@ -182,6 +187,28 @@ export const Dashboard: React.FC<DashboardProps> = ({
             className="bg-emerald-500 h-1.5 rounded-full transition-all duration-500"
             style={{ width: `${Math.max(1, debtErosionPercent)}%` }}
           />
+        </div>
+      </div>
+
+      {/* 2.5 NAKİT HARCAMALAR ÖZET KARTI */}
+      <div 
+        onClick={() => onNavigateTab('expenses')}
+        className="rounded-2xl bg-dark-900 p-4 border border-dark-800 shadow-sm cursor-pointer hover:border-gray-700 transition"
+      >
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+            <Receipt className="w-3.5 h-3.5 text-emerald-400" />
+            Bu Ayki Nakit Harcamalar
+          </span>
+          <span className="text-[11px] text-indigo-400 font-medium flex items-center gap-0.5">
+            Harcamalar →
+          </span>
+        </div>
+        <div className="flex items-baseline justify-between mt-2">
+          <div className="text-2xl font-bold text-white tracking-tight">
+            {formatTL(totalCashExpensesThisMonth)}
+          </div>
+          <span className="text-[11px] text-emerald-400 font-medium">Kasım 2026</span>
         </div>
       </div>
 

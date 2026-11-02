@@ -3,12 +3,12 @@
   "name": "Finans ve Borç Takip Sistemi",
   "icons": [
     {
-      "src": "/wallet.svg",
+      "src": "./wallet.svg",
       "type": "image/svg+xml",
       "sizes": "192x192 512x512"
     }
   ],
-  "start_url": "/",
+  "start_url": "./",
   "background_color": "#0B0F19",
   "theme_color": "#0B0F19",
   "display": "standalone",

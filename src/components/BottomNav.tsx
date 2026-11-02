@@ -1,7 +1,6 @@
-import React from 'react';
-import { LayoutDashboard, CreditCard, CalendarClock, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, CreditCard, CalendarClock, TrendingUp, Receipt } from 'lucide-react';
 
-export type TabType = 'dashboard' | 'cards' | 'installments' | 'crypto_ppf';
+export type TabType = 'dashboard' | 'cards' | 'installments' | 'expenses' | 'crypto_ppf';
 
 interface BottomNavProps {
   currentTab: TabType;
@@ -12,13 +11,14 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onChangeTab })
   const tabs = [
     { id: 'dashboard' as TabType, label: 'Özet', icon: LayoutDashboard },
     { id: 'cards' as TabType, label: 'Kartlar', icon: CreditCard },
+    { id: 'expenses' as TabType, label: 'Harcama', icon: Receipt },
     { id: 'installments' as TabType, label: 'Taksitler', icon: CalendarClock },
-    { id: 'crypto_ppf' as TabType, label: 'PPF / Kripto', icon: TrendingUp },
+    { id: 'crypto_ppf' as TabType, label: 'PPF/Kripto', icon: TrendingUp },
   ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-dark-950/90 backdrop-blur-lg border-t border-dark-800 pb-safe">
-      <div className="max-w-md mx-auto grid grid-cols-4 px-2 py-2">
+      <div className="max-w-md mx-auto grid grid-cols-5 px-1 py-2">
         {tabs.map(tab => {
           const Icon = tab.icon;
           const isActive = currentTab === tab.id;

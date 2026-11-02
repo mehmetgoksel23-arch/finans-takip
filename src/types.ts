@@ -73,4 +73,20 @@ export interface FinanceState {
   ppfRecords: PpfRecord[];
   cryptoRecords: CryptoRecord[];
   jointFund: JointFund;
+  cashExpenses: CashExpenseItem[];
+}
+
+export interface CashExpenseTransaction {
+  id: string;
+  amount: number;
+  date: string; // "2026-11-02"
+  note?: string;
+}
+
+export interface CashExpenseItem {
+  id: string;
+  category: string; // "Yemek", "Market", vb.
+  month: string; // "Kasım 2026"
+  totalAmount: number;
+  transactions: CashExpenseTransaction[];
 }

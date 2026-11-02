@@ -11,6 +11,7 @@ import { QuickActionModal } from './components/QuickActionModal';
 import { AddJointMoneyModal } from './components/AddJointMoneyModal';
 import { QrModal } from './components/QrModal';
 import { SettingsModal } from './components/SettingsModal';
+import { CashExpensesView } from './components/CashExpensesView';
 import { Plus } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -60,6 +61,9 @@ export const App: React.FC = () => {
             initialCapitalDebt={store.state.initialCapitalDebt}
             personalPpfEarnings={store.personalPpfEarnings}
             totalErodedFromCapital={store.totalErodedFromCapital}
+            totalCashExpensesThisMonth={store.cashExpenses
+              .filter(e => e.month === 'Kasım 2026')
+              .reduce((sum, e) => sum + e.totalAmount, 0)}
             totalCardDebt={store.totalCardDebt}
             currentMonthObligation={store.currentMonthObligation}
             totalRemainingInstallments={store.totalRemainingInstallments}
@@ -74,6 +78,15 @@ export const App: React.FC = () => {
             cards={store.state.cards}
             onProcessTransaction={store.processCardTransaction}
             onAddCycle={store.addCardCycle}
+          />
+        )}
+
+        {currentTab === 'expenses' && (
+          <CashExpensesView
+            cashExpenses={store.cashExpenses}
+            onAddExpense={store.addCashExpense}
+            onDeleteTransaction={store.deleteCashExpenseTransaction}
+            onDeleteItem={store.deleteCashExpenseItem}
           />
         )}
 

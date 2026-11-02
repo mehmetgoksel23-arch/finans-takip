@@ -121,5 +121,6 @@ export const INITIAL_FINANCE_STATE: FinanceState = {
       { id: 'c-1', date: '2026-10-09', amount: 30000, gokselShare: 15000, partnerShare: 15000, note: 'İlk Giriş (15.000 + 15.000 TL)' },
       { id: 'c-2', date: '2026-10-24', amount: 40000, gokselShare: 20000, partnerShare: 20000, note: 'İkinci Giriş (20.000 + 20.000 TL)' }
     ]
-  }
+  },
+  cashExpenses: []
 };

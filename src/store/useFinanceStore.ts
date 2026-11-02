@@ -7,7 +7,8 @@ import {
   CryptoRecord, 
   CreditCardCycle,
   JointFund,
-  JointContribution
+  JointContribution,
+  CashExpenseItem
 } from '../types';
 import { INITIAL_FINANCE_STATE } from '../data/initialData';
 
@@ -35,7 +36,8 @@ export function useFinanceStore() {
           ...INITIAL_FINANCE_STATE,
           ...parsed,
           cards: migratedCards,
-          jointFund: parsed.jointFund || INITIAL_FINANCE_STATE.jointFund
+          jointFund: parsed.jointFund || INITIAL_FINANCE_STATE.jointFund,
+          cashExpenses: parsed.cashExpenses || INITIAL_FINANCE_STATE.cashExpenses || []
         };
       }
     } catch (e) {
@@ -373,6 +375,72 @@ export function useFinanceStore() {
     }
   };
 
+  const addCashExpense = (category: string, amount: number, month?: string, note?: string) => {
+    if (!category || amount <= 0) return;
+    const currentMonth = month || 'Kasım 2026';
+    const cleanCat = category.trim();
+    const todayStr = new Date().toISOString().split('T')[0];
+    const newTx = {
+      id: 'tx-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+      amount,
+      date: todayStr,
+      note
+    };
+
+    setState(prev => {
+      const expenses = prev.cashExpenses || [];
+      const existingIdx = expenses.findIndex(
+        e => e.month === currentMonth && e.category.toLowerCase() === cleanCat.toLowerCase()
+      );
+
+      if (existingIdx >= 0) {
+        const updated = [...expenses];
+        const item = updated[existingIdx];
+        updated[existingIdx] = {
+          ...item,
+          totalAmount: Number((item.totalAmount + amount).toFixed(2)),
+          transactions: [newTx, ...item.transactions]
+        };
+        return { ...prev, cashExpenses: updated };
+      } else {
+        const newItem: CashExpenseItem = {
+          id: 'exp-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+          category: cleanCat,
+          month: currentMonth,
+          totalAmount: Number(amount.toFixed(2)),
+          transactions: [newTx]
+        };
+        return { ...prev, cashExpenses: [newItem, ...expenses] };
+      }
+    });
+  };
+
+  const deleteCashExpenseTransaction = (itemId: string, txId: string) => {
+    setState(prev => {
+      const expenses = (prev.cashExpenses || []).map(item => {
+        if (item.id !== itemId) return item;
+        const targetTx = item.transactions.find(t => t.id === txId);
+        if (!targetTx) return item;
+        const newTransactions = item.transactions.filter(t => t.id !== txId);
+        const newTotal = Number(newTransactions.reduce((sum, tx) => sum + tx.amount, 0).toFixed(2));
+        return {
+          ...item,
+          totalAmount: newTotal,
+          transactions: newTransactions
+        };
+      }).filter(item => item.transactions.length > 0);
+
+      return { ...prev, cashExpenses: expenses };
+    });
+  };
+
+  const deleteCashExpenseItem = (itemId: string) => {
+    setState(prev => ({
+      ...prev,
+      cashExpenses: (prev.cashExpenses || []).filter(e => e.id !== itemId)
+    }));
+  };
+
   return {
     state,
     unlockPin,
@@ -408,6 +476,10 @@ export function useFinanceStore() {
     processCardTransaction,
     resetToDefaults,
     exportBackup,
-    importBackup
+    importBackup,
+    cashExpenses: state.cashExpenses || [],
+    addCashExpense,
+    deleteCashExpenseTransaction,
+    deleteCashExpenseItem
   };
 }
